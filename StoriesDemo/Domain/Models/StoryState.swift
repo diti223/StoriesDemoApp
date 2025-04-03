@@ -9,6 +9,6 @@ import Foundation
 
 struct StoryState: Codable {
     let id: Story.ID
-    let isSeen: Bool
-    let isLiked: Bool
+    var isSeen: Bool
+    var isLiked: Bool
 }

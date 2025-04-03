@@ -11,5 +11,5 @@ struct Story: Identifiable {
     let id: UUID
     let userId: User.ID
     let imageURL: URL
-    let state: StoryState
+    var state: StoryState
 }

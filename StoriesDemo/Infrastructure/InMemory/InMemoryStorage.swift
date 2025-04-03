@@ -37,7 +37,7 @@ extension InMemoryStorage: FetchUsersUseCase {
 // MARK: - FetchStoriesUseCase
 
 extension InMemoryStorage: FetchStoriesUseCase {
-    func fetchStories(userId: UUID, offset: Int, limit: Int) async throws -> [Story] {
+    func fetchStories(userId: User.ID, offset: Int, limit: Int) async throws -> [Story] {
         // Simulate network delay
         try await Task.sleep(nanoseconds: 500_000_000)
         
@@ -105,7 +105,13 @@ extension InMemoryStorage {
             jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
             let fileResponse = try jsonDecoder.decode(FileUsersResponse.self, from: data)
             
-            return fileResponse.pages.flatMap(\.users)
+            return fileResponse.pages.flatMap(\.users).map {
+                User(
+                    id: $0.id,
+                    name: $0.name,
+                    profilePictureURL: $0.profilePictureUrl
+                )
+            }
         } catch {
             fatalError("Failed to load users from JSON: \(error)")
         }
@@ -129,7 +135,13 @@ extension InMemoryStorage {
 
 struct FileUsersResponse: Codable {
     struct Page: Codable {
-        let users: [User]
+        let users: [FileUser]
+    }
+    
+    struct FileUser: Codable {
+        let id: Int
+        let name: String
+        let profilePictureUrl: URL
     }
     let pages: [Page]
 }

@@ -83,9 +83,6 @@ struct UserRow: View {
                 .font(.headline)
             
             Spacer()
-            
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
         }
         .padding(.vertical, 4)
     }
@@ -94,7 +91,12 @@ struct UserRow: View {
 #Preview {
     UsersListView(
         viewModel: UsersListViewModel(
-            fetcher: PreviewFetchUsersUseCase()
+            fetcher: StubFetchUsersUseCase.makeSuccess()
+        )
+    )
+    UsersListView(
+        viewModel: UsersListViewModel(
+            fetcher: StubFetchUsersUseCase.makeFailure(error: NoStoriesFoundError())
         )
     )
 }

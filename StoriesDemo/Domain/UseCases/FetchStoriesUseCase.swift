@@ -8,5 +8,5 @@
 import Foundation
 
 protocol FetchStoriesUseCase {
-    func fetchStories(userId: UUID, offset: Int, limit: Int) async throws -> [Story]
+    func fetchStories(userId: User.ID, offset: Int, limit: Int) async throws -> [Story]
 }

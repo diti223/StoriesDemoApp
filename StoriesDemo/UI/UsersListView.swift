@@ -87,7 +87,8 @@ struct UsersListView<StoryView: View>: View {
             StoriesView(
                 viewModel: StoriesListViewModel(
                     user: user,
-                    storiesFetcher: StubFetchStoriesUseCase()
+                    storiesFetcher: StubFetchStoriesUseCase(),
+                    storyStateSaver: DummySaveStoryStateUseCase()
                 )
             )
         },

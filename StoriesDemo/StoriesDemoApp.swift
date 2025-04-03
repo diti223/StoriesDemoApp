@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct StoriesDemoApp: App {
-    let inMemoryContainer = InMemoryUseCaseContainer.make()
+    let inMemoryStorage = InMemoryStorage()
     
     var body: some Scene {
         WindowGroup {
@@ -18,27 +18,15 @@ struct StoriesDemoApp: App {
                     StoriesView(
                         viewModel: StoriesListViewModel(
                             user: user,
-                            storiesFetcher: inMemoryContainer.fetchStoriesUseCase
+                            storiesFetcher: inMemoryStorage,
+                            storyStateSaver: inMemoryStorage
                         )
                     )
                 },
                 viewModel: UsersListViewModel(
-                    fetcher: inMemoryContainer.fetchUsersUseCase
+                    fetcher: inMemoryStorage
                 )
             )
         }
-    }
-}
-
-struct InMemoryUseCaseContainer {
-    static func make() -> UseCaseContainer {
-        let storage = InMemoryStorage()
-        storage.loadData()
-
-        return UseCaseContainer(
-            fetchUsersUseCase: storage,
-            fetchStoriesUseCase: storage,
-            saveStoryStateUseCase: storage
-        )
     }
 }

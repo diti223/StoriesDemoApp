@@ -8,6 +8,7 @@ import Combine
 
 class StoriesListViewModel: ObservableObject {
     let storiesFetcher: FetchStoriesUseCase
+    let storyStateSaver: SaveStoryStateUseCase
     
     let user: User
     @Published var stories: [Story] = []
@@ -19,10 +20,12 @@ class StoriesListViewModel: ObservableObject {
 
     init(
         user: User,
-        storiesFetcher: FetchStoriesUseCase
+        storiesFetcher: FetchStoriesUseCase,
+        storyStateSaver: SaveStoryStateUseCase
     ) {
         self.user = user
         self.storiesFetcher = storiesFetcher
+        self.storyStateSaver = storyStateSaver
     }
 
     func loadStories() async {

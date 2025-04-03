@@ -12,3 +12,7 @@ struct StoryState: Codable {
     var isSeen: Bool
     var isLiked: Bool
 }
+
+extension StoryState {
+    static let initial = StoryState(id: UUID(), isSeen: false, isLiked: false)
+}

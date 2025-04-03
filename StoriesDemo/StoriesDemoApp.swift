@@ -14,6 +14,14 @@ struct StoriesDemoApp: App {
     var body: some Scene {
         WindowGroup {
             UsersListView(
+                storyView: { user in
+                    StoriesView(
+                        viewModel: StoriesListViewModel(
+                            user: user,
+                            storiesFetcher: inMemoryContainer.fetchStoriesUseCase
+                        )
+                    )
+                },
                 viewModel: UsersListViewModel(
                     fetcher: inMemoryContainer.fetchUsersUseCase
                 )

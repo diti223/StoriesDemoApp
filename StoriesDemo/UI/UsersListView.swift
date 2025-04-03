@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct UsersListView: View {
+struct UsersListView<StoryView: View>: View {
+    @ViewBuilder
+    let storyView: (User) -> StoryView
     @ObservedObject var viewModel: UsersListViewModel
     var users: [User] {
         viewModel.users
@@ -44,9 +46,7 @@ struct UsersListView: View {
             }
         }
         .fullScreenCover(item: $viewModel.selectedUser) { selectedUser in
-            StoriesView(user: selectedUser, close: {
-                viewModel.selectedUser = nil
-            })
+            storyView(selectedUser)
         }
     }
     
@@ -83,6 +83,14 @@ struct UsersListView: View {
 
 #Preview {
     UsersListView(
+        storyView: { user in
+            StoriesView(
+                viewModel: StoriesListViewModel(
+                    user: user,
+                    storiesFetcher: StubFetchStoriesUseCase()
+                )
+            )
+        },
         viewModel: UsersListViewModel(
             fetcher: StubFetchUsersUseCase.makeSuccess(count: 12)
         )
@@ -91,6 +99,9 @@ struct UsersListView: View {
 
 #Preview("Failure") {
     UsersListView(
+        storyView: { _ in
+            Text("No view")
+        },
         viewModel: UsersListViewModel(
             fetcher: StubFetchUsersUseCase
                 .makeFailure(error: NoStoriesFoundError())
@@ -99,28 +110,3 @@ struct UsersListView: View {
 }
 
 
-struct StoriesView: View {
-    let user: User
-    let close: () -> Void
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.6)
-                .ignoresSafeArea()
-            VStack {
-                HStack {
-                 	Spacer()
-                    Button.init(action: close, label: {
-                        Label.init("", systemImage: "xmark")
-                            .font(.headline)
-                            .bold()
-                    })
-                    .padding()
-                }
-                Spacer()
-                Text("Stories from \(user.name)")
-                Spacer()
-            }
-        }
-        .foregroundStyle(.white)
-    }
-}

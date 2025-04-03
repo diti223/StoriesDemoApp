@@ -8,6 +8,7 @@ import Combine
 
 class StoriesListViewModel: ObservableObject {
     let storiesFetcher: FetchStoriesUseCase
+    
     let user: User
     @Published var stories: [Story] = []
     @Published var isLoading = false
@@ -16,7 +17,10 @@ class StoriesListViewModel: ObservableObject {
     private var offset: Int = 0
     private static let storiesFetchLimit: Int = 2
 
-    init(user: User, storiesFetcher: FetchStoriesUseCase) {
+    init(
+        user: User,
+        storiesFetcher: FetchStoriesUseCase
+    ) {
         self.user = user
         self.storiesFetcher = storiesFetcher
     }

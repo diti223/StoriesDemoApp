@@ -38,7 +38,8 @@ class UsersListViewModel: ObservableObject {
     // MARK: - Private Methods
     private func loadUsers() async {
         do {
-            self.users = try await fetcher.fetchUsers()
+            let users = try await fetcher.fetchUsers()
+            self.users = users
         } catch {
             self.error = error
         }

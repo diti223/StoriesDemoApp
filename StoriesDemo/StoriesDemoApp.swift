@@ -9,24 +9,35 @@ import SwiftUI
 
 @main
 struct StoriesDemoApp: App {
-    let inMemoryStorage = InMemoryStorage()
+    
     
     var body: some Scene {
         WindowGroup {
-            UsersListView(
-                storyView: { user in
-                    StoriesView(
-                        viewModel: StoriesListViewModel(
-                            user: user,
-                            storiesFetcher: inMemoryStorage,
-                            storyStateSaver: inMemoryStorage
-                        )
+            RootView()
+        }
+    }
+}
+
+struct RootView: View {
+    let inMemoryStorage = InMemoryStorage()
+    
+    var body: some View {
+        UsersListView(
+            storyView: { user in
+                StoriesView(
+                    viewModel: StoriesListViewModel(
+                        user: user,
+                        storiesFetcher: inMemoryStorage,
+                        storyStateSaver: inMemoryStorage
                     )
-                },
-                viewModel: UsersListViewModel(
-                    fetcher: inMemoryStorage
                 )
+            },
+            viewModel: UsersListViewModel(
+                fetcher: inMemoryStorage
             )
+        )
+        .onAppear {
+            inMemoryStorage.loadData()
         }
     }
 }

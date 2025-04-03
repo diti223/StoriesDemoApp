@@ -27,31 +27,9 @@ struct UsersListView: View {
                 if isLoading && users.isEmpty {
                     ProgressView()
                 } else if let error {
-                    VStack {
-                        Text("Something went wrong")
-                        Text(error.localizedDescription)
-                            .font(.caption)
-                        
-                        Button("Try Again") {
-                            Task {
-                                await viewModel.loadInitialUsers()
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
+                    makeRetryView(error: error)
                 } else {
-                    List(users) { user in
-                        Button {
-							//TODO: implement
-                        } label: {
-                            UserRow(user: user)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .listStyle(.plain)
-                    .refreshable {
-                        await viewModel.refreshUsers()
-                    }
+                    makeUsersList()
                 }
             }
             .navigationTitle("Stories")
@@ -62,41 +40,49 @@ struct UsersListView: View {
             }
         }
     }
-}
-
-struct UserRow: View {
-    let user: User
     
-    var body: some View {
-        HStack {
-            AsyncImage(url: user.profilePictureURL) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Color.gray.opacity(0.3)
+    @ViewBuilder
+    private func makeRetryView(error: Error) -> some View {
+        SomethingWentWrongView(error: error, retry: {
+            Task {
+                await viewModel.loadInitialUsers()
             }
-            .frame(width: 50, height: 50)
-            .clipShape(Circle())
-            
-            Text(user.name)
-                .font(.headline)
-            
-            Spacer()
+        })
+    }
+    
+    @ViewBuilder
+    private func makeUsersList() -> some View {
+        Form {
+            List(users) { user in
+                Button {
+                    //TODO: implement
+                } label: {
+                    UserRow(user: user)
+                }
+                .foregroundStyle(.foreground)
+            }
         }
-        .padding(.vertical, 4)
+        .refreshable {
+            await viewModel.refreshUsers()
+        }
     }
 }
+
+
 
 #Preview {
     UsersListView(
         viewModel: UsersListViewModel(
-            fetcher: StubFetchUsersUseCase.makeSuccess()
+            fetcher: StubFetchUsersUseCase.makeSuccess(count: 12)
         )
     )
+}
+
+#Preview("Failure") {
     UsersListView(
         viewModel: UsersListViewModel(
-            fetcher: StubFetchUsersUseCase.makeFailure(error: NoStoriesFoundError())
+            fetcher: StubFetchUsersUseCase
+                .makeFailure(error: NoStoriesFoundError())
         )
     )
 }

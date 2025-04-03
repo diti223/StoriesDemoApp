@@ -16,7 +16,9 @@ class UsersListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: Error?
     
-    init(fetcher: FetchUsersUseCase) {
+    init(
+        fetcher: FetchUsersUseCase
+    ) {
         self.fetcher = fetcher
     }
     
@@ -33,15 +35,15 @@ class UsersListViewModel: ObservableObject {
         await loadUsers()
     }
     
-    
-    
+    // MARK: - Private Methods
     private func loadUsers() async {
         do {
             self.users = try await fetcher.fetchUsers()
         } catch {
             self.error = error
         }
-        
     }
     
+    
 }
+

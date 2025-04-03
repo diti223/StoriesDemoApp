@@ -9,8 +9,7 @@ import Foundation
 
 struct Story: Identifiable {
     let id: UUID
-    let user: User
+    let userId: User.ID
     let imageURL: URL
-    var isSeen: Bool
-    var isLiked: Bool
+    let state: StoryState
 }

@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct User: Identifiable {
+struct User: Codable, Identifiable {
     let id: UUID
-    let username: String
-    let avatarURL: URL
+    let name: String
+    let profilePictureURL: URL
 }

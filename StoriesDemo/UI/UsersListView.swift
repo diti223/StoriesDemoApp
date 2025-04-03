@@ -21,6 +21,10 @@ struct UsersListView: View {
         viewModel.error
     }
     
+    var selectedUser: User? {
+        viewModel.selectedUser
+    }
+    
     var body: some View {
         NavigationStack {
             Group {
@@ -39,6 +43,11 @@ struct UsersListView: View {
                 await viewModel.loadInitialUsers()
             }
         }
+        .fullScreenCover(item: $viewModel.selectedUser) { selectedUser in
+            StoriesView(user: selectedUser, close: {
+                viewModel.selectedUser = nil
+            })
+        }
     }
     
     @ViewBuilder
@@ -55,7 +64,9 @@ struct UsersListView: View {
         Form {
             List(users) { user in
                 Button {
-                    //TODO: implement
+                    withAnimation {
+                        viewModel.selectedUser = user
+                    }
                 } label: {
                     UserRow(user: user)
                 }
@@ -85,4 +96,31 @@ struct UsersListView: View {
                 .makeFailure(error: NoStoriesFoundError())
         )
     )
+}
+
+
+struct StoriesView: View {
+    let user: User
+    let close: () -> Void
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.6)
+                .ignoresSafeArea()
+            VStack {
+                HStack {
+                 	Spacer()
+                    Button.init(action: close, label: {
+                        Label.init("", systemImage: "xmark")
+                            .font(.headline)
+                            .bold()
+                    })
+                    .padding()
+                }
+                Spacer()
+                Text("Stories from \(user.name)")
+                Spacer()
+            }
+        }
+        .foregroundStyle(.white)
+    }
 }

@@ -9,13 +9,13 @@ import SwiftUI
 
 struct StoryView: View {
     let story: Story
-    let onLikeToggle: (Bool) -> Void
+    let onLikeToggle: () -> Void
     let onNext: () -> Void
     let onPrevious: () -> Void
     
     @StateObject private var viewModel: StoryViewModel
     
-    init(story: Story, onLikeToggle: @escaping (Bool) -> Void, onNext: @escaping () -> Void, onPrevious: @escaping () -> Void) {
+    init(story: Story, onLikeToggle: @escaping () -> Void, onNext: @escaping () -> Void, onPrevious: @escaping () -> Void) {
         self.story = story
         self.onLikeToggle = onLikeToggle
         self.onNext = onNext
@@ -88,14 +88,6 @@ struct StoryView: View {
             }
             
         }
-//        .onTapGesture(count: 1) { location in
-//            // Left side of screen goes to previous, right side to next
-//            if location.x < UIScreen.main.bounds.width / 2 {
-//                onPrevious()
-//            } else {
-//                onNext()
-//            }
-//        }
         .onLongPressGesture(minimumDuration: 0.05, pressing: { isPressing in
             // Pause timer when user is pressing
             if isPressing {
@@ -109,15 +101,15 @@ struct StoryView: View {
     @ViewBuilder
     private func makeLikeButton() -> some View {
         Button(action: {
-            onLikeToggle(!story.state.isLiked)
-        }) {
+            onLikeToggle()
+        }, label: {
             Image(systemName: story.state.isLiked ? "heart.fill" : "heart")
                 .font(.title)
                 .foregroundStyle(story.state.isLiked ? .red : .white)
                 .padding()
                 .background(.ultraThinMaterial)
                 .clipShape(Circle())
-        }
+        })
         .padding([.bottom, .trailing], 16)
         .frame(maxWidth: .infinity, alignment: .trailing)
     }

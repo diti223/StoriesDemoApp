@@ -42,19 +42,33 @@ class StoriesListViewModel: ObservableObject {
         isLoading = false
     }
 
-    func toggleLike(storyId: Story.ID, isLiked: Bool) async {
-        let newState = isLiked ? StoryState.initial : StoryState(id: storyId, isSeen: true, isLiked: true)
+    func toggleLike(storyId: Story.ID) async {
+        guard let index = stories.firstIndex(where: { $0.id == storyId }) else {
+            return
+        }
+        var story = stories[index]
         do {
-            try await storyStateSaver.saveStoryState(storyId: storyId, state: newState)
+            var state = story.state
+            state.isLiked = !state.isLiked
+            try await storyStateSaver.saveStoryState(storyId: storyId, state: state)
+            story.state = state
+            stories[index] = story
         } catch {
             // silently fail
         }
     }
 
     func markStoryAsSeen(storyId: Story.ID) async {
-        let newState = StoryState(id: storyId, isSeen: true, isLiked: false)
+        guard let index = stories.firstIndex(where: { $0.id == storyId }) else {
+            return
+        }
+        var story = stories[index]
         do {
-            try await storyStateSaver.saveStoryState(storyId: storyId, state: newState)
+            var state = story.state
+            state.isSeen = true
+            try await storyStateSaver.saveStoryState(storyId: storyId, state: state)
+            story.state = state
+            stories[index] = story
         } catch {
             // silently fail
         }

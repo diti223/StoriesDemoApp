@@ -112,9 +112,9 @@ struct StoriesView: View {
                 ForEach(Array(viewModel.stories.enumerated()), id: \.element.id) { index, story in
                     StoryView(
                         story: story,
-                        onLikeToggle: { liked in
+                        onLikeToggle: {
                             Task {
-                                await viewModel.toggleLike(storyId: story.id, isLiked: liked)
+                                await viewModel.toggleLike(storyId: story.id)
                             }
                         },
                         onNext: {
